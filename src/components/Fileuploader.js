@@ -16,6 +16,7 @@ import CloudUpload from '@material-ui/icons/CloudUpload';
 import CropImage from './CropImage';
 import TesseractText from '../tesseract/TesseractText';
 import GeneratingPDF from '../tesseract/GenratingPdf'
+import FileTypeSelector from './FileTypeSelector'
 
 const useStyles = makeStyles((theme) => ({
     dropzoneContainer:{
@@ -109,6 +110,10 @@ function Fileuploader() {
                                     <p>Drag 'n' drop some file here, or click to select a file</p>
                                 </Paper>
                             </RootRef>
+                            <Divider />
+                            <Grid style={{paddingTop: '20px'}}>
+                                <FileTypeSelector />
+                            </Grid>
                         </Grid>
                         <Grid item xs={6} style={{padding:16}}>
                             <Typography>
