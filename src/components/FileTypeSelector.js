@@ -4,7 +4,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import NativeSelect from '@material-ui/core/NativeSelect';
 
-export default function FileTypeSelector() {
+export default function FileTypeSelector({handleFileType}) {
   return (
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth>
@@ -12,14 +12,15 @@ export default function FileTypeSelector() {
           File Type
         </InputLabel>
         <NativeSelect
+          onChange={(e) => handleFileType(e)}
           defaultValue={"PDF"}
           inputProps={{
             name: 'FIle Type',
             id: 'uncontrolled-native',
           }}
         >
-          <option value={10}>PDF</option>
-          <option value={20}>EXCEL</option>
+          <option value={"PDF"}>PDF</option>
+          <option value={"EXCEL"}>EXCEL</option>
         </NativeSelect>
       </FormControl>
     </Box>

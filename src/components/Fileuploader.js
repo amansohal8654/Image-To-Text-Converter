@@ -4,6 +4,7 @@ import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import { Divider, LinearProgress } from '@material-ui/core'
+import Button from '@material-ui/core/Button';
 import {useDropzone} from 'react-dropzone'
 import RootRef from '@material-ui/core/RootRef'
 import {makeStyles} from '@material-ui/core/Styles'
@@ -50,6 +51,8 @@ function Fileuploader() {
     const [selectedImageFile, setSelectedImageFile] = React.useState();
     const [text, setText] = React.useState('');
     const [open, setOpen] = React.useState(false);
+    const [imageData, setImageData] = React.useState();
+    const [fileType, setFileType] = React.useState("PDF");
 
     const handleSnackbar = () => {
       setOpen(true);
@@ -59,9 +62,21 @@ function Fileuploader() {
         if (reason === 'clickaway') {
           return;
         }
-    
         setOpen(false);
-      };
+    };
+
+    const handleFileType = (e) => {
+        setFileType(e.target.value);
+    }
+
+    const handleFileDownload = () => {
+        if(fileType === 'PDF'){
+            GeneratingPDF(imageData.data.text, file.name.split(".")[0]);
+        }
+        if(fileType === 'EXCEL'){
+            arrayToExcel.convertArrayToTable(imageData.data.lines, file.name.split(".")[0])
+        }
+    }
 
     const buttonSx = {
         ...(success && {
@@ -76,11 +91,10 @@ function Fileuploader() {
         if (!loading) {
             setSuccess(false);
             setLoading(true);
-            const imageData = await TesseractText(setPercents, file);
-            setText(imageData.data.text);
+            const data = await TesseractText(setPercents, file);
+            setText(data.data.text);
+            setImageData(data);
             //imageData.data.lines.map(m => console.log(m.words));
-            //GeneratingPDF(imageData.data.text, file.name.split(".")[0]);
-            //arrayToExcel.convertArrayToTable(imageData.data.lines, file.name.split(".")[0])
             setSuccess(true);
             setLoading(false);
         }
@@ -129,9 +143,14 @@ function Fileuploader() {
                                 </Paper>
                             </RootRef>
                             <Divider />
-                            <Grid style={{paddingTop: '20px'}}>
-                                <FileTypeSelector />
-                            </Grid>
+                            {imageData && <Grid container style={{paddingTop: '20px'}}>
+                                <Grid xs={8}>
+                                    <FileTypeSelector handleFileType = {handleFileType}/>
+                                </Grid>
+                                <Grid xs={2} style={{paddingLeft:"10px"}}>
+                                    <Button variant="contained" onClick={() => handleFileDownload()}>Download</Button>
+                                </Grid>
+                            </Grid>}
                         </Grid>
                         <Grid item xs={12} sm={12} md={6} style={{padding:16}}>
                             <Typography>
