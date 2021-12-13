@@ -1,4 +1,5 @@
 .container{
-    text-align: center;
+    display: flex;
     margin-top: 10vh;
+    text-align: center;
 }

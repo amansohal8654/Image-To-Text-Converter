@@ -4,6 +4,7 @@ const GeneratingPDF = (text, filename) => {
     const doc = new jsPDF('landscape', 'px', 'a3', 'false');
 
     doc.text(text, 20, 20);
+    //doc.setDisplayMode()
     doc.save(`${filename}.pdf`);
 }
 

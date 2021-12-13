@@ -79,6 +79,7 @@ function CropImage(props) {
                 setCroppedFile(newFile);
             }
         }, 'image/jpg');
+
     }, [completedCrop])
 
     return (

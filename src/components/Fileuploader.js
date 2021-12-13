@@ -17,6 +17,9 @@ import CropImage from './CropImage';
 import TesseractText from '../tesseract/TesseractText';
 import GeneratingPDF from '../tesseract/GenratingPdf'
 import FileTypeSelector from './FileTypeSelector'
+import Snackbar from './Snackbar'
+import {arrayToExcel} from '../tesseract/ArrayToExcel'
+import '../index.css';
 
 const useStyles = makeStyles((theme) => ({
     dropzoneContainer:{
@@ -45,6 +48,20 @@ function Fileuploader() {
     const [preview, setPreview] = React.useState();
     const [percents, setPercents] = React.useState(0);
     const [selectedImageFile, setSelectedImageFile] = React.useState();
+    const [text, setText] = React.useState('');
+    const [open, setOpen] = React.useState(false);
+
+    const handleSnackbar = () => {
+      setOpen(true);
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        setOpen(false);
+      };
 
     const buttonSx = {
         ...(success && {
@@ -60,7 +77,10 @@ function Fileuploader() {
             setSuccess(false);
             setLoading(true);
             const imageData = await TesseractText(setPercents, file);
-            GeneratingPDF(imageData.data.text, file.name.split(".")[0]);
+            setText(imageData.data.text);
+            //imageData.data.lines.map(m => console.log(m.words));
+            //GeneratingPDF(imageData.data.text, file.name.split(".")[0]);
+            //arrayToExcel.convertArrayToTable(imageData.data.lines, file.name.split(".")[0])
             setSuccess(true);
             setLoading(false);
         }
@@ -73,8 +93,7 @@ function Fileuploader() {
             setSelectedImageFile(fileDropped)
             return;
         }
-        console.log(acceptedFiles);
-        setUploadFile(fileDropped);
+        handleSnackbar();
     })
 
     const {getRootProps, getInputProps} = useDropzone({multiple: false, onDrop})
@@ -82,24 +101,23 @@ function Fileuploader() {
     const {ref, ...rootProps} = getRootProps();
 
     const onCropSave=({file, preview})=>{
-        console.log(file, preview);
         setPreview(preview);
         setUploadFile(file);
         setSuccess(false); 
     }
 
     return (
-        <div>
+        <div style={{display: 'flex', flexDirection: 'column', flexWrap: 'wrap', width: '100%'}}>
             <Container maxWidth="md">
                 <Paper elevation={4}>
-                    <Grid container>
+                    <Grid container className="mainLayout" style = {{}}>
                         <Grid item xs={12}>
                             <Typography align="center" style={{padding:16}}>
                                 <h3>File Upload</h3>
                             </Typography>
                             <Divider/>
                         </Grid>
-                        <Grid item xs={6} style={{padding:16}}>
+                        <Grid item className="dragAndDrop" xs={12} sm={12} md={6} style={{padding:16}}>
                             <RootRef rootRef={ref}>
                                 <Paper 
                                 {...rootProps}
@@ -115,7 +133,7 @@ function Fileuploader() {
                                 <FileTypeSelector />
                             </Grid>
                         </Grid>
-                        <Grid item xs={6} style={{padding:16}}>
+                        <Grid item xs={12} sm={12} md={6} style={{padding:16}}>
                             <Typography>
                                 Preview
                             </Typography>
@@ -168,10 +186,33 @@ function Fileuploader() {
                     </Grid>
                 </Paper>
             </Container>
-            
+            <Container maxWidth="md">
+                <Box
+                    style={{
+                        paddingTop: "20px",
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        '& > :not(style)': {
+                        m: 1,
+                        width: "100%",
+                        height: 400,
+                        },
+                    }}
+                    >
+                    <Paper elevation={3}>
+                    <Typography variant="h5" gutterBottom>
+                       <div  style={{padding: "20px"}}>{text}</div> 
+                    </Typography>
+                    </Paper>
+                </Box>
+            </Container>
             <CropImage
                 onSave={onCropSave}
                 selectedFile={selectedImageFile}
+            />
+            <Snackbar 
+            snackbarState = {open}
+            handleClose = {handleClose}
             />
      </div>
     )
