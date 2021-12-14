@@ -13,7 +13,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { green } from '@material-ui/core/colors';
 import Fab from '@material-ui/core/Fab';
 import CheckIcon from '@material-ui/icons/Check';
-import CloudUpload from '@material-ui/icons/CloudUpload';
+import CompareArrowsIcon from '@material-ui/icons/CompareArrows';
 import CropImage from './CropImage';
 import TesseractText from '../tesseract/TesseractText';
 import GeneratingPDF from '../tesseract/GenratingPdf'
@@ -174,7 +174,7 @@ function Fileuploader() {
                                         disabled = {loading}
                                         onClick={handleExtractDataFromFile}
                                         >
-                                        {success ? <CheckIcon /> : <CloudUpload />}
+                                        {success ? <CheckIcon /> : <CompareArrowsIcon />}
                                         </Fab>
                                         {loading && (
                                         <CircularProgress
