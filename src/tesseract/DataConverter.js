@@ -1,21 +1,27 @@
-export const arrayToExcel = {
+export const DataConverter = {
     convertArrayToTable : async (lines, fileName) => {
-        debugger;
         //use keys from the first array object to form table column headers
-        const tableHeaders = `<tr>${lines[0].text.split(' ').map(text => `<td>${text}</td>`).join('')}</tr>`;
-        lines.shift();
-        //now loop through all array objects to form table rows
-        const tableRows = lines.map(obj =>
-           [`<tr>
-              ${obj.text.split(' ').map(text => `<td>${text === null ||    text === '' ? '' : text}</td>`).join('')}
-           <tr/>`]).join('');
-        const table = `<table>${tableHeaders}${tableRows}</table>`.trim();
-            console.log(table);
-     
+        const tableRows = lines.map(line => `<tr>${line.text.split(' ').map(text => `<td>${text}</td>`).join('')}</tr>`).join('');
+        const table = `<table>${tableRows}</table>`.trim();
         const xmlTable = createXMLTable(table, fileName);
-        const downloadURL = createFileUrl(xmlTable);
+        const downloadURL = createFileUrl(xmlTable, 'application/vnd.ms-excel;base64,');
+        downloadFile(downloadURL, fileName);
+     },
+
+     convertTextToDocx : async (data, fileName) => {
+        const downloadURL = createFileUrl(data, 'application/msword;base64,');
+        downloadFile(downloadURL, fileName);
+     },
+
+     convertTextToExcel : async (data, fileName) => {
+        const downloadURL = createFileUrl(data, 'application/vnd.ms-excel;base64,');
         downloadFile(downloadURL, fileName);
      }
+    //  convertTextToPdf : async (data, fileName) => {
+    //     let byteArray = new Uint8Array(data)
+    //     const downloadURL = createFileUrl(byteArray, "application/pdf");
+    //     downloadFile(downloadURL, fileName);
+    //  }
 };
 
 const createXMLTable = (table, fileName) => {
@@ -43,9 +49,9 @@ const createXMLTable = (table, fileName) => {
           return xmlTable;
       }
 
-    const createFileUrl = (xmlTable) => {
-        const tableBlob = new Blob([xmlTable], {type: 'application/vnd.ms-excel;base64,' });
-        const downloadURL = URL.createObjectURL(tableBlob);
+    const createFileUrl = (data, type) => {
+        const blobData = new Blob([data], {type: type});
+        const downloadURL = URL.createObjectURL(blobData);
         return downloadURL;
     }
 

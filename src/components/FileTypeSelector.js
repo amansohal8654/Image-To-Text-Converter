@@ -21,6 +21,8 @@ export default function FileTypeSelector({handleFileType}) {
         >
           <option value={"PDF"}>PDF</option>
           <option value={"EXCEL"}>EXCEL</option>
+          <option value={"DOCX"}>DOCX</option>
+          <option value={"COL-EXCEL"}>COL-EXCEL</option>
         </NativeSelect>
       </FormControl>
     </Box>

@@ -19,7 +19,7 @@ import TesseractText from '../tesseract/TesseractText';
 import GeneratingPDF from '../tesseract/GenratingPdf'
 import FileTypeSelector from './FileTypeSelector'
 import Snackbar from './Snackbar'
-import {arrayToExcel} from '../tesseract/ArrayToExcel'
+import {DataConverter} from '../tesseract/DataConverter'
 import '../index.css';
 
 const useStyles = makeStyles((theme) => ({
@@ -73,8 +73,14 @@ function Fileuploader() {
         if(fileType === 'PDF'){
             GeneratingPDF(imageData.data.text, file.name.split(".")[0]);
         }
+        if(fileType === 'COL-EXCEL'){
+            DataConverter.convertTextToExcel(imageData.data.text, file.name.split(".")[0]);
+        }
         if(fileType === 'EXCEL'){
-            arrayToExcel.convertArrayToTable(imageData.data.lines, file.name.split(".")[0])
+            DataConverter.convertArrayToTable(imageData.data.lines, file.name.split(".")[0]);
+        }
+        if(fileType === 'DOCX'){
+            DataConverter.convertTextToDocx(imageData.data.text, file.name.split(".")[0]);
         }
     }
 
